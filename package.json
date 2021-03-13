@@ -1,0 +1,16 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "server for translator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Patryk Plaza",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "ibm-watson": "^6.0.3"
+  }
+}
