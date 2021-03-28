@@ -5,7 +5,10 @@ const app = express();
 const port = process.env.PORT || 5000;
 app.listen(port);
 app.use(express.json({ limit: "1mb" }));
-app.use(cors());
+
+const corsOptions = {
+  origin: "https://pensive-lalande-2ecd72.netlify.app",
+};
 
 const LanguageTranslatorV3 = require("ibm-watson/language-translator/v3");
 const { IamAuthenticator } = require("ibm-watson/auth");
@@ -19,21 +22,27 @@ const languageTranslator = new LanguageTranslatorV3({
   serviceUrl: `${process.env.API_URL}`,
 });
 
-app.get("/", async (request, response) => {
+app.get("/", cors(corsOptions), async (request, response) => {
   const languages = await languageTranslator.listLanguages();
   response.json(languages);
 });
 
-app.get("/translate/:word/:from/:to", async (request, response) => {
-  const translateThis = request.params.word;
+app.get(
+  "/translate/:word/:from/:to",
+  cors(corsOptions),
+  async (request, response) => {
+    const translateThis = request.params.word;
 
-  const translateParams = {
-    text: translateThis,
-    source: request.params.from,
-    target: request.params.to,
-  };
+    const translateParams = {
+      text: translateThis,
+      source: request.params.from,
+      target: request.params.to,
+    };
 
-  const translateResponse = await languageTranslator.translate(translateParams);
+    const translateResponse = await languageTranslator.translate(
+      translateParams
+    );
 
-  response.json(translateResponse);
-});
+    response.json(translateResponse);
+  }
+);
