@@ -24,13 +24,13 @@ app.get("/", async (request, response) => {
   response.json(languages);
 });
 
-app.get("/translate/:word", async (request, response) => {
+app.get("/translate/:word/:from/:to", async (request, response) => {
   const translateThis = request.params.word;
 
   const translateParams = {
     text: translateThis,
-    source: "en",
-    target: "pl",
+    source: request.params.from,
+    target: request.params.to,
   };
 
   const translateResponse = await languageTranslator.translate(translateParams);
