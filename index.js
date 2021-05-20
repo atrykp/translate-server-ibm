@@ -4,13 +4,18 @@ const cors = require("cors");
 const path = require("path");
 const http = require("http");
 require("dotenv").config();
+const translateRouter = require("./routes/translate");
 const app = express();
 const port = process.env.PORT || 5000;
 app.listen(port);
 app.use(express.json({ limit: "1mb" }));
+app.use("/tranlator", translateRouter);
 
 const corsOptions = {
-  origin: "https://pensive-lalande-2ecd72.netlify.app",
+  origin: [
+    "https://pensive-lalande-2ecd72.netlify.app",
+    "http://localhost:3000",
+  ],
 };
 
 const LanguageTranslatorV3 = require("ibm-watson/language-translator/v3");
@@ -34,15 +39,20 @@ const textToSpeech = new TextToSpeechV1({
   serviceUrl: `${process.env.API_LISTEN_URL}`,
 });
 
-app.get("/", cors(corsOptions), async (request, response) => {
-  const languages = await languageTranslator.listLanguages();
+app.get("/", cors(corsOptions), async (request, response, next) => {
+  let languages;
+  try {
+    languages = await languageTranslator.listLanguages();
+  } catch (err) {
+    return next(err);
+  }
   response.json(languages);
 });
 
 app.get(
   "/translate/:word/:from/:to",
   cors(corsOptions),
-  async (request, response) => {
+  async (request, response, next) => {
     const translateThis = request.params.word;
 
     const translateParams = {
@@ -50,10 +60,12 @@ app.get(
       source: request.params.from,
       target: request.params.to,
     };
-
-    const translateResponse = await languageTranslator.translate(
-      translateParams
-    );
+    let translateResponse;
+    try {
+      translateResponse = await languageTranslator.translate(translateParams);
+    } catch (error) {
+      return next(error);
+    }
 
     response.json(translateResponse);
   }
