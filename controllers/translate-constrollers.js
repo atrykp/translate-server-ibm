@@ -1,32 +1,11 @@
+const ibmTranslate = require("../IBM/ibm-translate");
 const fs = require("fs");
 const path = require("path");
-const http = require("http");
-
-const LanguageTranslatorV3 = require("ibm-watson/language-translator/v3");
-const { IamAuthenticator } = require("ibm-watson/auth");
-
-const languageTranslator = new LanguageTranslatorV3({
-  version: "2018-05-01",
-  authenticator: new IamAuthenticator({
-    apikey: `${process.env.API_KEY}`,
-  }),
-
-  serviceUrl: `${process.env.API_URL}`,
-});
-
-const TextToSpeechV1 = require("ibm-watson/text-to-speech/v1");
-
-const textToSpeech = new TextToSpeechV1({
-  authenticator: new IamAuthenticator({
-    apikey: `${process.env.API_LISTEN_KEY}`,
-  }),
-  serviceUrl: `${process.env.API_LISTEN_URL}`,
-});
 
 const getLanguagesList = async (request, response, next) => {
   let languages;
   try {
-    languages = await languageTranslator.listLanguages();
+    languages = await ibmTranslate.languageTranslator.listLanguages();
   } catch (err) {
     return next(err);
   }
@@ -43,7 +22,9 @@ const translateSentence = async (request, response, next) => {
   };
   let translateResponse;
   try {
-    translateResponse = await languageTranslator.translate(translateParams);
+    translateResponse = await ibmTranslate.languageTranslator.translate(
+      translateParams
+    );
   } catch (error) {
     return next(error);
   }
@@ -60,18 +41,14 @@ const getTextToSpeech = async (request, response) => {
     voice: "en-US_AllisonV3Voice",
   };
 
-  textToSpeech
+  ibmTranslate.textToSpeech
     .synthesize(synthesizeParams)
     .then((response) => {
-      return textToSpeech.repairWavHeaderStream(response.result);
-      console.log(response);
+      return ibmTranslate.textToSpeech.repairWavHeaderStream(response.result);
     })
     .then((buffer) => {
-      console.log(buffer);
-
       fs.writeFileSync(`${__dirname}/${translateThis}.wav`, buffer);
       const filePath = path.join(__dirname, `${translateThis}.wav`);
-      console.log(__dirname, "ścieżka pliku");
       const stat = fs.statSync(filePath);
       response.writeHead(200, {
         "Content-Type": "audio/wav",
