@@ -15,10 +15,11 @@ const corsOptions = {
     "http://localhost:3000",
   ],
 };
+app.use(cors(corsOptions));
 
 app.use(express.json({ limit: "1mb" }));
-app.use("/translator", cors(corsOptions), translateRouter);
-app.use("/api/users", cors(corsOptions), userRouter);
+app.use("/translator", translateRouter);
+app.use("/api/users", userRouter);
 
 app.listen(port);
 
