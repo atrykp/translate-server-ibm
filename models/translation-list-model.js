@@ -9,7 +9,6 @@ const translationListSchema = new Schema({
   },
   translationList: [
     {
-      id: { type: String, require: true },
       counter: { type: Number, require: true },
       fromWord: { type: String, require: true },
       toWord: { type: String, require: true },

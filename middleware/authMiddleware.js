@@ -15,13 +15,15 @@ const protect = async (req, res, next) => {
       next();
     } catch (error) {
       res.status(401);
-      throw new Error("Invalid token");
+      const err = new Error("Invalid token");
+      res.send(err.message);
     }
   }
 
   if (!token || !req.headers.authorization) {
     res.status(401);
-    throw new Error("No token");
+    const err = new Error("No token");
+    res.send(err.message);
   }
 };
 

@@ -1,4 +1,6 @@
 const ibmTranslate = require("../IBM/ibm-translate");
+const User = require("../models/user-model");
+const TranslationList = require("../models/translation-list-model");
 const fs = require("fs");
 const path = require("path");
 
@@ -64,6 +66,27 @@ const getTextToSpeech = async (request, response) => {
     });
 };
 
+const saveToList = async (req, res) => {
+  const translation = await new TranslationList({
+    user: req.user._id,
+    translationList: req.body,
+  });
+  try {
+    const user = await TranslationList.findOne({ user: req.user._id });
+    if (user) {
+      user.translationList.push(translation.translationList[0]);
+      await user.save();
+      res.send("added");
+    } else {
+      await translation.save();
+      res.send("saved new one");
+    }
+  } catch (error) {
+    res.send(error);
+  }
+};
+
 exports.getLanguagesList = getLanguagesList;
 exports.translateSentence = translateSentence;
 exports.getTextToSpeech = getTextToSpeech;
+exports.saveToList = saveToList;
