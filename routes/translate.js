@@ -5,7 +5,10 @@ const translateControllers = require("../controllers/translate-constrollers");
 const router = express.Router();
 
 router.get("/", translateControllers.getLanguagesList);
-router.post("/list", protect, translateControllers.saveToList);
+router
+  .route("/list")
+  .post(protect, translateControllers.saveToList)
+  .get(protect, translateControllers.getList);
 router.post("/flashcards", translateControllers.getLanguagesList);
 
 router.get(

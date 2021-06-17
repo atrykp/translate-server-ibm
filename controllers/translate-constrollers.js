@@ -86,7 +86,29 @@ const saveToList = async (req, res) => {
   }
 };
 
+const getList = async (req, res) => {
+  const id = req.user._id;
+  if (!id) {
+    const err = new Error("user error");
+    res.send(err);
+  }
+  try {
+    const userList = await TranslationList.findOne({ user: id });
+
+    if (!userList) {
+      res.status(404);
+      res.send(new Error("user list not found"));
+    }
+
+    res.json({ userList: userList.translationList });
+  } catch (error) {
+    res.status(404);
+    res.send(error.message);
+  }
+};
+
 exports.getLanguagesList = getLanguagesList;
 exports.translateSentence = translateSentence;
 exports.getTextToSpeech = getTextToSpeech;
 exports.saveToList = saveToList;
+exports.getList = getList;
