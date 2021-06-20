@@ -86,6 +86,24 @@ const saveToList = async (req, res) => {
   }
 };
 
+const updateWordCounter = async (req, res) => {
+  const wordId = req.body.id;
+
+  try {
+    await TranslationList.updateOne(
+      { user: req.user._id, "translationList._id": wordId },
+      {
+        $inc: {
+          "translationList.$.counter": 1,
+        },
+      }
+    );
+    res.send({ message: "counter updated" });
+  } catch (error) {
+    res.send(error);
+  }
+};
+
 const getList = async (req, res) => {
   const id = req.user._id;
   if (!id) {
@@ -112,3 +130,4 @@ exports.translateSentence = translateSentence;
 exports.getTextToSpeech = getTextToSpeech;
 exports.saveToList = saveToList;
 exports.getList = getList;
+exports.updateWordCounter = updateWordCounter;

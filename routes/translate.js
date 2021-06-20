@@ -9,6 +9,8 @@ router
   .route("/list")
   .post(protect, translateControllers.saveToList)
   .get(protect, translateControllers.getList);
+
+router.patch("/list", protect, translateControllers.updateWordCounter);
 router.post("/flashcards", translateControllers.getLanguagesList);
 
 router.get(
