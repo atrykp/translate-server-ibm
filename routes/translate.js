@@ -13,6 +13,8 @@ router
 router.patch("/list", protect, translateControllers.updateWordCounter);
 router.post("/flashcards", translateControllers.getLanguagesList);
 
+router.get("/list/:id", protect, translateControllers.getWordById);
+
 router.get(
   "/translate/:word/:from/:to",
   translateControllers.translateSentence

@@ -124,6 +124,30 @@ const getList = async (req, res) => {
     res.send(error.message);
   }
 };
+const getWordById = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const user = await TranslationList.findOne({
+      user: req.user._id,
+    });
+
+    const [sentence] = user.translationList.filter(
+      (element) => element._id == id
+    );
+
+    if (!sentence) {
+      res.status(404);
+      res.send(new Error("word not found"));
+      return;
+    }
+
+    res.json(sentence);
+  } catch (error) {
+    res.status(404);
+    res.send(error.message);
+  }
+};
 
 exports.getLanguagesList = getLanguagesList;
 exports.translateSentence = translateSentence;
@@ -131,3 +155,4 @@ exports.getTextToSpeech = getTextToSpeech;
 exports.saveToList = saveToList;
 exports.getList = getList;
 exports.updateWordCounter = updateWordCounter;
+exports.getWordById = getWordById;
