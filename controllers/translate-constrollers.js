@@ -148,6 +148,21 @@ const getWordById = async (req, res) => {
     res.send(error.message);
   }
 };
+const deleteWordById = async (req, res) => {
+  const wordId = req.params.id;
+
+  try {
+    const user = await TranslationList.findOne({ user: req.user._id });
+    user.translationList = user.translationList.filter((elem) => {
+      return elem._id.toString() !== wordId;
+    });
+    await user.save();
+    res.send(user);
+  } catch (error) {
+    res.status(404);
+    res.send(error.message);
+  }
+};
 
 exports.getLanguagesList = getLanguagesList;
 exports.translateSentence = translateSentence;
@@ -156,3 +171,4 @@ exports.saveToList = saveToList;
 exports.getList = getList;
 exports.updateWordCounter = updateWordCounter;
 exports.getWordById = getWordById;
+exports.deleteWordById = deleteWordById;

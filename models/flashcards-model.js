@@ -9,7 +9,6 @@ const flashcardsSchema = new Schema({
   },
   flashcards: [
     {
-      id: { type: String, require: true },
       iCan: { type: Boolean, require: true },
       fromWord: { type: String, require: true },
       toWord: { type: String, require: true },

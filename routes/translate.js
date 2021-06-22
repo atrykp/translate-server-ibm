@@ -14,6 +14,7 @@ router.patch("/list", protect, translateControllers.updateWordCounter);
 router.post("/flashcards", translateControllers.getLanguagesList);
 
 router.get("/list/:id", protect, translateControllers.getWordById);
+router.delete("/list/:id", protect, translateControllers.deleteWordById);
 
 router.get(
   "/translate/:word/:from/:to",
