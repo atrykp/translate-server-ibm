@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
+const AppError = require("./utils/appError");
 
 const translateRouter = require("./routes/translate");
 const userRouter = require("./routes/users");
@@ -33,3 +34,17 @@ mongoose.connect(
   },
   () => console.log("Database Connected...")
 );
+
+app.all("*", (req, res, next) => {
+  next(new AppError(`Cant find route ${req.originalUrl}`), 404);
+});
+
+app.use((err, req, res, next) => {
+  err.statusCode = err.statusCode || 5000;
+  err.status = err.status || "error";
+
+  res.status(err.statusCode).json({
+    status: err.status,
+    message: err.message,
+  });
+});

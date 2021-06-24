@@ -5,16 +5,19 @@ const translateControllers = require("../controllers/translate-constrollers");
 const router = express.Router();
 
 router.get("/", translateControllers.getLanguagesList);
+
 router
   .route("/list")
   .post(protect, translateControllers.saveToList)
-  .get(protect, translateControllers.getList);
+  .get(protect, translateControllers.getList)
+  .patch(protect, translateControllers.updateWordCounter);
 
-router.patch("/list", protect, translateControllers.updateWordCounter);
+router
+  .route("/list:id")
+  .get(protect, translateControllers.getWordById)
+  .delete(protect, translateControllers.deleteWordById);
+
 router.post("/flashcards", translateControllers.getLanguagesList);
-
-router.get("/list/:id", protect, translateControllers.getWordById);
-router.delete("/list/:id", protect, translateControllers.deleteWordById);
 
 router.get(
   "/translate/:word/:from/:to",

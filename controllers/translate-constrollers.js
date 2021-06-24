@@ -75,8 +75,10 @@ const saveToList = async (req, res) => {
     const user = await TranslationList.findOne({ user: req.user._id });
     if (user) {
       user.translationList.push(translation.translationList[0]);
-      await user.save();
-      res.send("added");
+      const data = await user.save();
+      const length = data.translationList.length;
+
+      res.send(data.translationList[length - 1]);
     } else {
       await translation.save();
       res.send("saved new one");
