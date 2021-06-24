@@ -3,6 +3,7 @@ const User = require("../models/user-model");
 const TranslationList = require("../models/translation-list-model");
 const fs = require("fs");
 const path = require("path");
+const AppError = require("../utils/appError");
 
 const getLanguagesList = async (request, response, next) => {
   let languages;
@@ -165,6 +166,27 @@ const deleteWordById = async (req, res) => {
     res.send(error.message);
   }
 };
+const editWord = async (req, res) => {
+  const wordId = req.params.id;
+
+  try {
+    const keys = Object.keys(req.body);
+    const user = await TranslationList.findOne({ user: req.user._id });
+    if (!user) throw new Error("user not found");
+    const [translation] = user.translationList.filter(
+      (element) => element._id.toString() === wordId
+    );
+
+    for (const val of keys) {
+      translation[val] = req.body[val];
+    }
+    await user.save();
+    res.send(user);
+  } catch (error) {
+    res.status(404);
+    res.send(error.message);
+  }
+};
 
 exports.getLanguagesList = getLanguagesList;
 exports.translateSentence = translateSentence;
@@ -174,3 +196,4 @@ exports.getList = getList;
 exports.updateWordCounter = updateWordCounter;
 exports.getWordById = getWordById;
 exports.deleteWordById = deleteWordById;
+exports.editWord = editWord;
