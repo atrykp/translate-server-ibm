@@ -18,6 +18,8 @@ router
   .delete(protect, translateControllers.deleteWordById)
   .put(protect, translateControllers.editWord);
 
+router.post("/cards", protect, translateControllers.saveCard);
+
 router.post("/flashcards", translateControllers.getLanguagesList);
 
 router.get(

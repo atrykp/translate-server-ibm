@@ -1,6 +1,7 @@
 const ibmTranslate = require("../IBM/ibm-translate");
 const User = require("../models/user-model");
 const TranslationList = require("../models/translation-list-model");
+const Flashcards = require("../models/flashcards-model");
 const fs = require("fs");
 const path = require("path");
 const AppError = require("../utils/appError");
@@ -188,6 +189,29 @@ const editWord = async (req, res) => {
   }
 };
 
+//Flashcards controllers
+
+const saveCard = async (req, res) => {
+  const flashcard = await new Flashcards({
+    user: req.user._id,
+    flashcards: req.body,
+  });
+  try {
+    const user = await Flashcards.findOne({ user: req.user._id });
+    if (user) {
+      user.flashcards.push(flashcard.flashcards[0]);
+      const data = await user.save();
+      const length = data.flashcards.length;
+      res.send(data.flashcards[length - 1]);
+    } else {
+      await flashcard.save();
+      res.send(flashcard);
+    }
+  } catch (error) {
+    res.send(error);
+  }
+};
+
 exports.getLanguagesList = getLanguagesList;
 exports.translateSentence = translateSentence;
 exports.getTextToSpeech = getTextToSpeech;
@@ -197,3 +221,4 @@ exports.updateWordCounter = updateWordCounter;
 exports.getWordById = getWordById;
 exports.deleteWordById = deleteWordById;
 exports.editWord = editWord;
+exports.saveCard = saveCard;
