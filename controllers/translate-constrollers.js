@@ -211,6 +211,16 @@ const saveCard = async (req, res) => {
     res.send(error);
   }
 };
+const getCardsList = async (req, res) => {
+  try {
+    const [flashcardsList] = await Flashcards.find({
+      user: req.user._id,
+    });
+    res.send(flashcardsList.flashcards);
+  } catch (error) {
+    res.send(error);
+  }
+};
 
 exports.getLanguagesList = getLanguagesList;
 exports.translateSentence = translateSentence;
@@ -222,3 +232,4 @@ exports.getWordById = getWordById;
 exports.deleteWordById = deleteWordById;
 exports.editWord = editWord;
 exports.saveCard = saveCard;
+exports.getCardsList = getCardsList;
