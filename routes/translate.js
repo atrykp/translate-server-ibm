@@ -21,7 +21,10 @@ router
 router
   .route("/cards")
   .post(protect, translateControllers.saveCard)
-  .get(protect, translateControllers.getCardsList);
+  .get(protect, translateControllers.getCardsList)
+  .delete(protect, translateControllers.removeCardById);
+
+router.route("/cards/:id").delete(protect, translateControllers.removeCardById);
 
 router.post("/flashcards", translateControllers.getLanguagesList);
 

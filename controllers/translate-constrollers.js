@@ -221,6 +221,25 @@ const getCardsList = async (req, res) => {
     res.send(error);
   }
 };
+const removeCardById = async (req, res) => {
+  const cardId = req.params.id;
+
+  try {
+    const data = await Flashcards.findOne({
+      user: req.user._id,
+    });
+
+    const newArr = data.flashcards.filter((elem) => {
+      return elem._id.toString() !== cardId;
+    });
+    data.flashcards = newArr;
+
+    await data.save();
+    res.send(data);
+  } catch (error) {
+    res.send(error);
+  }
+};
 
 exports.getLanguagesList = getLanguagesList;
 exports.translateSentence = translateSentence;
@@ -233,3 +252,4 @@ exports.deleteWordById = deleteWordById;
 exports.editWord = editWord;
 exports.saveCard = saveCard;
 exports.getCardsList = getCardsList;
+exports.removeCardById = removeCardById;
