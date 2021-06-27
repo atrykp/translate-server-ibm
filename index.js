@@ -9,14 +9,26 @@ const userRouter = require("./routes/users");
 
 const app = express();
 
+const allowedOrigins = [
+  "https://pensive-lalande-2ecd72.netlify.app",
+  "http://localhost:3000",
+];
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg =
+          "The CORS policy for this site does not " +
+          "allow access from the specified Origin.";
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
+  })
+);
+
 const port = process.env.PORT || 5000;
-const corsOptions = {
-  origin: [
-    "https://pensive-lalande-2ecd72.netlify.app",
-    "http://localhost:3000",
-  ],
-};
-app.use(cors(corsOptions));
 
 app.use(express.json({ limit: "1mb" }));
 app.use("/translator", translateRouter);

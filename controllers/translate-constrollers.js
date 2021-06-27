@@ -241,6 +241,28 @@ const removeCardById = async (req, res) => {
   }
 };
 
+const editCard = async (req, res) => {
+  const cardId = req.params.id;
+
+  try {
+    const keys = Object.keys(req.body);
+    const user = await Flashcards.findOne({ user: req.user._id });
+    if (!user) throw new Error("user not found");
+    const [translation] = user.flashcards.filter(
+      (element) => element._id.toString() === cardId
+    );
+
+    for (const val of keys) {
+      translation[val] = req.body[val];
+    }
+    await user.save();
+    res.send(user);
+  } catch (error) {
+    res.status(404);
+    res.send(error.message);
+  }
+};
+
 exports.getLanguagesList = getLanguagesList;
 exports.translateSentence = translateSentence;
 exports.getTextToSpeech = getTextToSpeech;
@@ -253,3 +275,4 @@ exports.editWord = editWord;
 exports.saveCard = saveCard;
 exports.getCardsList = getCardsList;
 exports.removeCardById = removeCardById;
+exports.editCard = editCard;
