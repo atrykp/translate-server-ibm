@@ -11,7 +11,14 @@ const app = express();
 
 const port = process.env.PORT || 5000;
 
-app.use(cors());
+const corsOptions = {
+  origin: [
+    "https://pensive-lalande-2ecd72.netlify.app",
+    "http://localhost:3000",
+  ],
+};
+app.use(cors(corsOptions));
+
 app.use(express.json({ limit: "1mb" }));
 app.use("/translator", translateRouter);
 app.use("/api/users", userRouter);
