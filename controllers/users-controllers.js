@@ -46,5 +46,21 @@ const userLogin = async (req, res) => {
   }
 };
 
+const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password");
+    if (!user) {
+      res.status(404);
+      res.send(new Error("word not found"));
+      return;
+    }
+    res.json(user);
+  } catch (error) {
+    res.status(404);
+    res.send(error.message);
+  }
+};
+
 module.exports.userRegister = userRegister;
 module.exports.userLogin = userLogin;
+module.exports.getUserById = getUserById;
