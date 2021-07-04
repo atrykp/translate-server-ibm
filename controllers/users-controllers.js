@@ -61,6 +61,25 @@ const getUserById = async (req, res) => {
   }
 };
 
+const editUser = async (req, res) => {
+  const userId = req.user._id;
+
+  try {
+    const keys = Object.keys(req.body);
+    const user = await User.findById(userId);
+    if (!user) throw new Error("user not found");
+    for (const val of keys) {
+      user[val] = req.body[val];
+    }
+    await user.save();
+    res.send(user);
+  } catch (error) {
+    res.status(404);
+    res.send(error.message);
+  }
+};
+
 module.exports.userRegister = userRegister;
 module.exports.userLogin = userLogin;
 module.exports.getUserById = getUserById;
+module.exports.editUser = editUser;
