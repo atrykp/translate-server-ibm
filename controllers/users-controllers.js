@@ -79,7 +79,18 @@ const editUser = async (req, res) => {
   }
 };
 
+const removeUser = async (req, res) => {
+  const userId = req.user._id;
+  try {
+    const data = await User.findByIdAndRemove(userId);
+    res.send(data._id);
+  } catch (error) {
+    res.send(error);
+  }
+};
+
 module.exports.userRegister = userRegister;
 module.exports.userLogin = userLogin;
 module.exports.getUserById = getUserById;
 module.exports.editUser = editUser;
+module.exports.removeUser = removeUser;
