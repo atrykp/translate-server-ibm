@@ -1,5 +1,7 @@
 const generateToken = require("../utils/generateToken");
 const User = require("../models/user-model");
+const TranslationList = require("../models/translation-list-model");
+const Flashcards = require("../models/flashcards-model");
 const bcrypt = require("bcrypt");
 
 const user = new User();
@@ -82,8 +84,12 @@ const editUser = async (req, res) => {
 const removeUser = async (req, res) => {
   const userId = req.user._id;
   try {
-    const data = await User.findByIdAndRemove(userId);
-    res.send(data._id);
+    await User.findByIdAndRemove(userId);
+    await Flashcards.findOneAndRemove({ user: userId });
+    await TranslationList.findOneAndRemove({
+      user: userId,
+    });
+    res.send({ message: "user deleted" });
   } catch (error) {
     res.send(error);
   }
